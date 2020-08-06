@@ -1,0 +1,38 @@
+<div class="container">
+  <ion-grid>
+    <form (ngSubmit)="loginUser()" [formGroup]="form">
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="floating">Correo Electronico</ion-label>
+            <ion-input formControlName="email" type="email" placeholder="E-mail"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input formControlName="password" type="password" placeholder="Contraseña"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12"
+          ><a [routerLink]="['/auth/register']"
+            >Aun no tienes una cuenta?</a
+          ></ion-col
+        >
+        <ion-col size="12">
+          <ion-button
+            type="submit"
+            [disabled]="loading || !form.valid"
+            expand="full"
+            ><strong *ngIf="!loading">Inicia Sesion</strong>
+            <ion-spinner
+              class="ion-text-center"
+              *ngIf="loading"
+              color="light"
+            ></ion-spinner
+          ></ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
+  </ion-grid>
+</div>

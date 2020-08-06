@@ -1,0 +1,74 @@
+<div class="container">
+  <ion-grid>
+    <form (ngSubmit)="createUser()" [formGroup]="form">
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="floating">Correo Electronico</ion-label>
+            <ion-input
+              placeholder="E-mail"
+              type="email"
+              formControlName="email"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="floating">Usuario</ion-label>
+            <ion-input
+              placeholder="Usuario"
+              type="text"
+              formControlName="username"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input
+              placeholder="Contraseña"
+              type="password"
+              formControlName="password"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input
+              placeholder="Nombre"
+              type="text"
+              formControlName="firstName"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="floating">Apellido</ion-label>
+            <ion-input
+              placeholder="Apellido"
+              type="text"
+              formControlName="lastName"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12"
+          ><a [routerLink]="['/auth/login']">Ya tienes una cuenta?</a></ion-col
+        >
+        <ion-col size="12">
+          <ion-button
+            type="submit"
+            [disabled]="loading || !form.valid"
+            expand="full"
+            ><strong *ngIf="!loading">Registrate</strong>
+            <ion-spinner
+              class="ion-text-center"
+              *ngIf="loading"
+              color="light"
+            ></ion-spinner
+          ></ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
+  </ion-grid>
+</div>
