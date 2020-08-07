@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Productos</ion-title>
+    <ion-buttons slot="end">
+      <ion-icon
+        *ngIf="!loading && currentUser.email === stablishment.creatorEmail"
+        (click)="creating = !creating"
+        [name]="creating ? 'close-outline' : 'add-outline'"
+        size="large"
+      ></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div id="container" *ngIf="creating">
+    <ion-grid>
+      <form (ngSubmit)="addNewProduct()" [formGroup]="form">
+        <ion-row>
+          <ion-col size="12">
+            <app-image-picker
+              [showPreview]="form.get('image').value"
+              (imagePicked)="onImagePicked($event)"
+              (urlPicked)="onImagePicked($event, true)"
+            ></app-image-picker>
+          </ion-col>
+          <ion-col size="12">
+            <ion-item>
+              <ion-label position="floating">Nombre</ion-label>
+              <ion-input
+                formControlName="name"
+                type="text"
+                placeholder="Nombre"
+              ></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12">
+            <ion-item>
+              <ion-label position="floating">Precio</ion-label>
+              <ion-input
+                formControlName="price"
+                type="numeric"
+                placeholder="Precio"
+              ></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12">
+            <ion-button
+              type="submit"
+              [disabled]="loading || !form.valid"
+              expand="full"
+              ><strong *ngIf="!loading">Añadir Producto</strong>
+              <ion-spinner
+                class="ion-text-center"
+                *ngIf="loading"
+                color="light"
+              ></ion-spinner
+            ></ion-button>
+          </ion-col>
+        </ion-row>
+      </form>
+    </ion-grid>
+  </div>
+  <div id="container" *ngIf="!creating">
+    <ion-button
+      expand="full"
+      (click)="creating = true"
+      *ngIf="
+        !loading &&
+        stablishment.creatorEmail === currentUser.email &&
+        products.length === 0
+      "
+    >
+      Añadir producto
+    </ion-button>
+    <app-product *ngFor="let prod of products" [product]="prod" (onCartAdd)="onCartAdd($event)"></app-product>
+  </div>
+</ion-content>

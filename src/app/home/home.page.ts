@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { User } from "../models/user.interface";
+import { AuthService } from "../services/auth.service";
 
 @Component({
   selector: "app-home",
@@ -9,45 +11,26 @@ export class HomePage implements OnInit {
   public selectedIndex = 0;
   public appPages = [
     {
-      title: "Inbox",
-      url: "/home/folder/Inbox",
-      icon: "mail",
-    },
-    {
-      title: "Outbox",
-      url: "/home/folder/Outbox",
-      icon: "paper-plane",
-    },
-    {
-      title: "Favorites",
-      url: "/home/folder/Favorites",
-      icon: "heart",
-    },
-    {
-      title: "Archived",
-      url: "/home/folder/Archived",
-      icon: "archive",
-    },
-    {
-      title: "Trash",
-      url: "/home/folder/Trash",
-      icon: "trash",
-    },
-    {
-      title: "Spam",
-      url: "/home/folder/Spam",
-      icon: "warning",
+      title: "Carrito",
+      url: "/home/folder/cart",
+      icon: "cart",
     },
     {
       title: "Establecimientos",
       url: "/home/folder/stablishments",
-      icon: "trash"
-    }
+      icon: "trash",
+    },
   ];
   public labels = ["Family", "Friends", "Notes", "Work", "Travel", "Reminders"];
-  constructor() {}
+  public currentUser: User;
+
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
+    this.authService.getCurrentUser().subscribe((user) => {
+      this.currentUser = user;
+    });
+
     const path = window.location.pathname.split("folder/")[1];
     if (path !== undefined) {
       this.selectedIndex = this.appPages.findIndex(

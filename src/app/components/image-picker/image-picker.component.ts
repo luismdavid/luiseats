@@ -99,8 +99,8 @@ export class ImagePickerComponent implements OnInit {
       source: source,
       correctOrientation: true,
       preserveAspectRatio: true,
-      height: 320,
-      width: 200,
+      height: 1000,
+      width: 1000,
       resultType: CameraResultType.Base64,
     })
       .then((image) => {

@@ -11,6 +11,10 @@ const routes: Routes = [
     component: FolderPage,
     children: [
       {
+        path: 'products/:stablishmentId',
+        loadChildren: () => import('./products/products.module').then(m => m.ProductsPageModule)
+      },
+      {
         path: 'stablishments',
         component: StablishmentsComponent,
         pathMatch: 'full'

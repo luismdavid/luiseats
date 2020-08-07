@@ -5,22 +5,29 @@ import {
 } from "@angular/fire/firestore";
 import { map, first, switchMap } from "rxjs/operators";
 import { Observable, from } from "rxjs";
-import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFireStorage } from "@angular/fire/storage";
 import uuid from "uuid/v4";
 import { Stablishment } from "../models/stablishment.interface";
+import { Product } from "../models/product.interface";
+import { AuthService } from "./auth.service";
+import { User } from "../models/user.interface";
 
 @Injectable({
   providedIn: "root",
 })
 export class StablishmentService {
   lastDoc: QueryDocumentSnapshot<Stablishment>;
+  currentUser: User;
 
   constructor(
     private firestore: AngularFirestore,
-    private fAuth: AngularFireAuth,
+    private authService: AuthService,
     private storage: AngularFireStorage
-  ) {}
+  ) {
+    this.authService.getCurrentUser().subscribe((user) => {
+      this.currentUser = user;
+    });
+  }
 
   getAllStablishments(): Observable<Stablishment[]> {
     const stablishments = this.firestore
@@ -47,13 +54,9 @@ export class StablishmentService {
         map((doc) => {
           const data = doc.data();
           return {
+            ...data,
             id: doc.id,
-            name: data.name,
-            image: data.image,
-            description: data.description,
-            address: data.address,
-            phoneNumber: data.phoneNumber,
-          };
+          } as Stablishment;
         })
       );
   }
@@ -70,6 +73,7 @@ export class StablishmentService {
           address: stablishment.address,
           image: stablishment.image,
           phoneNumber: stablishment.phoneNumber,
+          creatorEmail: this.currentUser.email,
         })
       );
     }
@@ -100,12 +104,15 @@ export class StablishmentService {
             address: stablishment.address,
             image: imageUrl,
             phoneNumber: stablishment.phoneNumber,
+            creatorEmail: this.currentUser.email,
           })
         );
       }),
       first()
     );
   }
+
+  
 
   deleteStablishment(stablishment: Stablishment) {
     return from(
@@ -116,9 +123,7 @@ export class StablishmentService {
     ).pipe(
       first(),
       switchMap(() => {
-        return this.storage
-          .storage.refFromURL(stablishment.image)
-          .delete();
+        return this.storage.storage.refFromURL(stablishment.image).delete();
       })
     );
   }
@@ -144,13 +149,16 @@ export class StablishmentService {
     }
     if (url) {
       return from(
-        this.firestore.collection("stablishments").doc<Stablishment>(stablishment.id).update({
-          name: stablishment.name,
-          description: stablishment.description,
-          address: stablishment.address,
-          image: stablishment.image,
-          phoneNumber: stablishment.phoneNumber,
-        })
+        this.firestore
+          .collection("stablishments")
+          .doc<Stablishment>(stablishment.id)
+          .update({
+            name: stablishment.name,
+            description: stablishment.description,
+            address: stablishment.address,
+            image: stablishment.image,
+            phoneNumber: stablishment.phoneNumber,
+          })
       );
     }
     const formattedImage = stablishment.image.replace(
@@ -168,20 +176,21 @@ export class StablishmentService {
         })
     ).pipe(
       first(),
-      switchMap(() =>
-        this.storage.storage.refFromURL(oldImageUrl).delete()
-      ),
+      switchMap(() => this.storage.storage.refFromURL(oldImageUrl).delete()),
       switchMap((res) => this.storage.ref(imagePath).getDownloadURL()),
       first(),
       switchMap((imageUrl) => {
         return from(
-          this.firestore.collection("stablishments").doc<Stablishment>(stablishment.id).update({
-            name: stablishment.name,
-            description: stablishment.description,
-            address: stablishment.address,
-            image: imageUrl,
-            phoneNumber: stablishment.phoneNumber,
-          })
+          this.firestore
+            .collection("stablishments")
+            .doc<Stablishment>(stablishment.id)
+            .update({
+              name: stablishment.name,
+              description: stablishment.description,
+              address: stablishment.address,
+              image: imageUrl,
+              phoneNumber: stablishment.phoneNumber,
+            })
         );
       }),
       first()

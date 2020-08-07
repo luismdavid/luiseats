@@ -5,4 +5,5 @@ export interface Stablishment {
     address: string;
     phoneNumber: string;
     image: string;
+    creatorEmail: string;
 }

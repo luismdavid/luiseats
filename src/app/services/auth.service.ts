@@ -49,9 +49,11 @@ export class AuthService implements OnDestroy {
 
   getUserObservable() {
     let userEmail: string;
+    let userId: string;
     return this.fAuth.authState.pipe(
       switchMap(user => {
         if (user) {
+          userId = user.uid;
           userEmail = user.email;
           return this.firestore
             .doc<User>(`users/${user.uid}`)
@@ -62,7 +64,7 @@ export class AuthService implements OnDestroy {
       }),
       map(doc => {
         if (doc) {
-          return { ...doc.payload.data(), email: userEmail } as User;
+          return { ...doc.payload.data(), email: userEmail, id: userId } as User;
         }
       })
     );

@@ -1,0 +1,28 @@
+<ion-card>
+  <ion-img [src]="product.image"></ion-img>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-text>{{ product.name }}</ion-text>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-card-title>
+            <ion-row>
+              <ion-col>
+                <span>{{ product.price | currency }}</span>
+              </ion-col>
+            </ion-row>
+          </ion-card-title>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-fab horizontal="end" vertical="top" edge (click)="onCartAdd.emit(product)">
+      <ion-fab-button size="small">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ion-card-content>
+</ion-card>
