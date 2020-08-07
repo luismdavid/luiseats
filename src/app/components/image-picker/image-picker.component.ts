@@ -26,6 +26,7 @@ export class ImagePickerComponent implements OnInit {
   @ViewChild("filePicker", { static: false }) filePickerRef: ElementRef;
   @Input() showPreview = false;
   @Input() selectedImage: string;
+  @Input() readonly: boolean = false;
 
   constructor(
     private sheet: ActionSheetController,
@@ -36,6 +37,9 @@ export class ImagePickerComponent implements OnInit {
   ngOnInit() {}
 
   onPickImage() {
+    if (this.readonly) {
+      return;
+    }
     if (
       (this.platform.is("mobile") && !this.platform.is("hybrid")) ||
       this.platform.is("desktop")

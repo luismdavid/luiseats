@@ -1,4 +1,3 @@
-
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
@@ -18,22 +17,41 @@
             [selectedImage]="form.get('image').value"
             (imagePicked)="onImagePicked($event)"
             (urlPicked)="onImagePicked($event, true)"
+            [readonly]="
+              stablishment && currentUser.email !== stablishment.creatorEmail
+            "
           ></app-image-picker>
         </ion-col>
         <ion-col size="12">
           <ion-item>
             <ion-label position="floating">Nombre</ion-label>
             <ion-input
+              [readonly]="
+                stablishment && currentUser.email !== stablishment.creatorEmail
+              "
               formControlName="name"
               type="text"
               placeholder="Nombre"
             ></ion-input>
           </ion-item>
         </ion-col>
+        <ion-col size="12" *ngIf="form.valid">
+          <app-location-picker
+            [selectedLocationImage]="form.value.location.staticMapImageUrl"
+            [center]="form.value.location"
+            [selectable]="
+              stablishment && currentUser.email !== stablishment.creatorEmail
+            "
+            (locationPick)="onLocationPicked($event)"
+          ></app-location-picker>
+        </ion-col>
         <ion-col size="12">
           <ion-item>
             <ion-label position="floating">Descripcion</ion-label>
             <ion-textarea
+              [readonly]="
+                stablishment && currentUser.email !== stablishment.creatorEmail
+              "
               formControlName="description"
               type="text"
               placeholder="Descripcion"
@@ -42,25 +60,24 @@
         </ion-col>
         <ion-col size="12">
           <ion-item>
-            <ion-label position="floating">Direccion</ion-label>
-            <ion-textarea
-              formControlName="address"
-              type="text"
-              placeholder="Direccion"
-            ></ion-textarea>
-          </ion-item>
-        </ion-col>
-        <ion-col size="12">
-          <ion-item>
             <ion-label position="floating">Numero de telefono</ion-label>
             <ion-input
+              [readonly]="
+                stablishment && currentUser.email !== stablishment.creatorEmail
+              "
+              inputmode="tel"
               formControlName="phoneNumber"
               type="numeric"
               placeholder="424000000"
             ></ion-input>
           </ion-item>
         </ion-col>
-        <ion-col size="12">
+        <ion-col
+          size="12"
+          *ngIf="
+            stablishment && currentUser.email === stablishment.creatorEmail
+          "
+        >
           <ion-button
             (click)="updateStablishment()"
             [disabled]="loading || !form.valid"

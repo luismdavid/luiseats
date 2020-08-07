@@ -9,8 +9,9 @@ import { LoadingController, AlertController } from "@ionic/angular";
 import { StablishmentService } from "src/app/services/stablishment.service";
 import { ToastService } from "src/app/services/toast.service";
 import { Stablishment } from "src/app/models/stablishment.interface";
-import { AuthService } from 'src/app/services/auth.service';
-import { User } from 'src/app/models/user.interface';
+import { AuthService } from "src/app/services/auth.service";
+import { User } from "src/app/models/user.interface";
+import { PlaceLocation } from "src/app/models/location.model";
 
 @Component({
   selector: "app-stablishments",
@@ -35,9 +36,9 @@ export class StablishmentsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.getCurrentUser().subscribe(user => {
+    this.authService.getCurrentUser().subscribe((user) => {
       this.currentUser = user;
-    })
+    });
     this.stablishmentService
       .getAllStablishments()
       .subscribe((stablishments) => {
@@ -47,10 +48,19 @@ export class StablishmentsComponent implements OnInit {
     this.form = this.formBuilder.group({
       name: new FormControl("", Validators.required),
       description: new FormControl("", Validators.required),
-      address: new FormControl("", Validators.required),
       phoneNumber: new FormControl("", Validators.required),
       image: new FormControl("", Validators.required),
+      location: this.formBuilder.group({
+        address: new FormControl("", Validators.required),
+        lat: new FormControl("", Validators.required),
+        lng: new FormControl("", Validators.required),
+        staticMapImageUrl: new FormControl("", Validators.required)
+      }),
     });
+  }
+
+  onLocationPicked(location: PlaceLocation) {
+    this.form.patchValue({ location });
   }
 
   addNewStablishment() {

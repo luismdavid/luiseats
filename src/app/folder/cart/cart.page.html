@@ -1,0 +1,195 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Carrito</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="primary">
+  <ion-item-group>
+    <ng-container *ngIf="cartProducts.length !== 0">
+      <ion-row *ngFor="let product of cartProducts">
+        <ion-item-sliding class="ion-no-margin">
+          <ion-item class="ion-no-margin ion-no-padding" color="primary">
+            <ion-col size="3">
+              <ion-avatar>
+                <ion-img [src]="product.image"></ion-img>
+              </ion-avatar>
+            </ion-col>
+            <ion-col size="2">
+              <ion-button
+                (click)="removeOneFromCart(product)"
+                size="small"
+                color="danger"
+                expand="block"
+              >
+                <ion-icon name="remove" slot="icon-only"></ion-icon>
+              </ion-button>
+              <ion-button
+                color="secondary"
+                (click)="addOneToCart(product)"
+                expand="block"
+              >
+                <ion-icon name="add" slot="icon-only" size="small"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col size="6">
+              <h3 class="ion-no-margin" color="light">{{ product.name }}</h3>
+              <h5 class="ion-no-margin" color="medium">
+                precio: {{ product.price | currency }}
+              </h5>
+            </ion-col>
+          </ion-item>
+          <ion-item-options>
+            <ion-item-option color="danger" (click)="removeFromCart(product)">
+              <ion-icon name="trash" size="large"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-row>
+    </ng-container>
+    <ng-container *ngIf="cartProducts.length === 0">
+      <ion-row>
+        <ion-col>
+          <ion-item color="primary">
+            <ion-avatar slot="start">
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </ion-avatar>
+            <ion-label>
+              <h3>
+                <ion-skeleton-text
+                  animated
+                  style="width: 80%"
+                ></ion-skeleton-text>
+              </h3>
+              <p>
+                <ion-skeleton-text
+                  animated
+                  style="width: 60%"
+                ></ion-skeleton-text>
+              </p>
+              <p>
+                <ion-skeleton-text
+                  animated
+                  style="width: 30%"
+                ></ion-skeleton-text>
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item color="primary">
+            <ion-avatar slot="start">
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </ion-avatar>
+            <ion-label>
+              <h3>
+                <ion-skeleton-text
+                  animated
+                  style="width: 80%"
+                ></ion-skeleton-text>
+              </h3>
+              <p>
+                <ion-skeleton-text
+                  animated
+                  style="width: 60%"
+                ></ion-skeleton-text>
+              </p>
+              <p>
+                <ion-skeleton-text
+                  animated
+                  style="width: 30%"
+                ></ion-skeleton-text>
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item color="primary">
+            <ion-avatar slot="start">
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </ion-avatar>
+            <ion-label>
+              <h3>
+                <ion-skeleton-text
+                  animated
+                  style="width: 80%"
+                ></ion-skeleton-text>
+              </h3>
+              <p>
+                <ion-skeleton-text
+                  animated
+                  style="width: 60%"
+                ></ion-skeleton-text>
+              </p>
+              <p>
+                <ion-skeleton-text
+                  animated
+                  style="width: 30%"
+                ></ion-skeleton-text>
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+  </ion-item-group>
+  <ion-card class="ion-no-margin ion-no-padding">
+    <ion-card-subtitle class="ion-text-center" color="light">
+      Detalle
+    </ion-card-subtitle>
+    <ion-card-content>
+      <ion-item-group class="ion-margin-bottom" *ngIf="user">
+        <ion-item
+          class="ion-no-margin"
+          *ngFor="let product of cartProducts"
+          lines="none"
+        >
+          <ion-grid>
+            <ion-row>
+              <ion-col size="8">
+                {{ product.name }}x{{
+                user.cart.find(helperCheck(product)).quantity }}
+              </ion-col>
+              <ion-col size="4" class="ion-text-end">
+                {{ product.price * user.cart.find(helperCheck(product)).quantity
+                | currency }}
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-item-group>
+      <div class="line"></div>
+      <ion-item class="ion-margin-top">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="8">Total:</ion-col>
+            <ion-col size="4" class="ion-text-end">
+              {{ total | currency }}
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar color="primary">
+    <ion-button
+      color="success"
+      fill="solid"
+      (click)="checkout()"
+      expand="block"
+      class="ion-no-margin ion-no-padding"
+    >
+      Checkout
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

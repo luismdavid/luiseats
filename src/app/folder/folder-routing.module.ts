@@ -22,6 +22,10 @@ const routes: Routes = [
       {
         path: 'stablishments/:id',
         component: EditStablishmentComponent
+      },
+      {
+        path: 'cart',
+        loadChildren: () => import('./cart/cart.module').then(m => m.CartPageModule)
       }
     ]
   }

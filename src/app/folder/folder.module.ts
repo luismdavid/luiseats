@@ -10,6 +10,7 @@ import { FolderPage } from './folder.page';
 import { StablishmentsComponent } from './stablishments/stablishments.component';
 import { ComponentsModule } from '../components/components.module';
 import { EditStablishmentComponent } from './stablishments/edit-stablishment/edit-stablishment.component';
+import { CartPageModule } from './cart/cart.module';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { EditStablishmentComponent } from './stablishments/edit-stablishment/edi
     IonicModule,
     ReactiveFormsModule,
     FolderPageRoutingModule,
-    ComponentsModule
+    ComponentsModule,
   ],
   declarations: [FolderPage, StablishmentsComponent, EditStablishmentComponent]
 })

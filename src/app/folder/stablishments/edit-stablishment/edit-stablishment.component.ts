@@ -2,14 +2,22 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { StablishmentService } from "src/app/services/stablishment.service";
 import { Stablishment } from "src/app/models/stablishment.interface";
-import { LoadingController, ToastController, NavController } from "@ionic/angular";
+import {
+  LoadingController,
+  ToastController,
+  NavController,
+} from "@ionic/angular";
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from "@angular/forms";
-import { ToastService } from 'src/app/services/toast.service';
+import { ToastService } from "src/app/services/toast.service";
+import { AuthService } from "src/app/services/auth.service";
+import { User } from "src/app/models/user.interface";
+import { tap, switchMap, filter } from "rxjs/operators";
+import { PlaceLocation } from 'src/app/models/location.model';
 
 @Component({
   selector: "app-edit-stablishment",
@@ -22,6 +30,7 @@ export class EditStablishmentComponent implements OnInit {
   loading: boolean = false;
   private isImageChanged: string;
   private isImageUrl: boolean = false;
+  public currentUser: User;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -29,14 +38,20 @@ export class EditStablishmentComponent implements OnInit {
     private loadCtrl: LoadingController,
     private formBuilder: FormBuilder,
     private toast: ToastService,
-    private nav: NavController
+    private nav: NavController,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
     this.form = this.formBuilder.group({
       name: new FormControl("", Validators.required),
       description: new FormControl("", Validators.required),
-      address: new FormControl("", Validators.required),
+      location: this.formBuilder.group({
+        address: new FormControl("", Validators.required),
+        lat: new FormControl("", Validators.required),
+        lng: new FormControl("", Validators.required),
+        staticMapImageUrl: new FormControl("", Validators.required),
+      }),
       phoneNumber: new FormControl("", Validators.required),
       image: new FormControl("", Validators.required),
     });
@@ -47,14 +62,27 @@ export class EditStablishmentComponent implements OnInit {
       .then((load) => {
         load.present();
         const id = this.activatedRoute.snapshot.paramMap.get("id");
-        this.stablishmentService.getStablishment(id).subscribe((stab) => {
-          this.stablishment = stab;
-          this.form.reset(stab);
-          load.dismiss();
-        });
+        this.authService
+          .getCurrentUser()
+          .pipe(
+            filter(user => !!user),
+            tap((user) => {
+              this.currentUser = user;
+            }),
+            switchMap(() => this.stablishmentService.getStablishment(id))
+          )
+          .subscribe((stab) => {
+            this.stablishment = stab;
+            this.form.reset(stab);
+            load.dismiss();
+          });
       });
   }
 
+  onLocationPicked(location: PlaceLocation) {
+    this.form.patchValue({ location });
+  }
+  
   updateStablishment() {
     this.loading = true;
     this.stablishmentService

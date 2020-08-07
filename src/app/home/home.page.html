@@ -2,7 +2,9 @@
   <ion-menu contentId="main-content" type="overlay">
     <ion-content>
       <ion-list id="inbox-list">
-        <ion-list-header>{{ currentUser ? currentUser.firstName:  }}</ion-list-header>
+        <ion-list-header
+          >{{ currentUser ? currentUser.firstName: '' }}</ion-list-header
+        >
         <ion-note>{{ currentUser ? currentUser.email : '' }}</ion-note>
 
         <ion-menu-toggle
@@ -23,7 +25,12 @@
               [md]="p.icon + '-sharp'"
             ></ion-icon>
             <ion-label>{{ p.title }}</ion-label>
-            <ion-badge *ngIf="p.icon === 'cart' && currentUser" slot="end" color="danger">{{ currentUser.cart.length }}</ion-badge>
+            <ion-badge
+              *ngIf="p.icon === 'cart' && currentUser"
+              slot="end"
+              color="danger"
+              >{{ currentUser.cart.length }}</ion-badge
+            >
           </ion-item>
         </ion-menu-toggle>
       </ion-list>

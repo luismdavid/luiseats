@@ -45,7 +45,7 @@
             (click)="updateProduct()"
             [disabled]="loading || !form.valid"
             expand="full"
-            ><strong *ngIf="!loading">Modificar Establecimiento</strong>
+            ><strong *ngIf="!loading">Modificar Producto</strong>
             <ion-spinner
               class="ion-text-center"
               *ngIf="loading"
@@ -57,7 +57,7 @@
             [disabled]="loading"
             expand="full"
             color="danger"
-            ><strong *ngIf="!loading">Eliminar Establecimiento</strong>
+            ><strong *ngIf="!loading">Eliminar Producto</strong>
             <ion-spinner
               class="ion-text-center"
               *ngIf="loading"

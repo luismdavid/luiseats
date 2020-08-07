@@ -70,10 +70,10 @@ export class StablishmentService {
         this.firestore.collection<Stablishment>("stablishments").add({
           name: stablishment.name,
           description: stablishment.description,
-          address: stablishment.address,
           image: stablishment.image,
           phoneNumber: stablishment.phoneNumber,
           creatorEmail: this.currentUser.email,
+          location: stablishment.location
         })
       );
     }
@@ -101,10 +101,10 @@ export class StablishmentService {
           this.firestore.collection("stablishments").doc<Stablishment>(id).set({
             name: stablishment.name,
             description: stablishment.description,
-            address: stablishment.address,
             image: imageUrl,
             phoneNumber: stablishment.phoneNumber,
             creatorEmail: this.currentUser.email,
+            location: stablishment.location
           })
         );
       }),
@@ -141,7 +141,6 @@ export class StablishmentService {
           .update({
             name: stablishment.name,
             description: stablishment.description,
-            address: stablishment.address,
             image: stablishment.image,
             phoneNumber: stablishment.phoneNumber,
           })
@@ -155,7 +154,6 @@ export class StablishmentService {
           .update({
             name: stablishment.name,
             description: stablishment.description,
-            address: stablishment.address,
             image: stablishment.image,
             phoneNumber: stablishment.phoneNumber,
           })
@@ -187,7 +185,6 @@ export class StablishmentService {
             .update({
               name: stablishment.name,
               description: stablishment.description,
-              address: stablishment.address,
               image: imageUrl,
               phoneNumber: stablishment.phoneNumber,
             })
