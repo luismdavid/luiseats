@@ -7,6 +7,7 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import { AuthService } from "./auth.service";
 import { User } from "../models/user.interface";
 import uuid from "uuid/v4";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
@@ -17,7 +18,8 @@ export class ProductService {
   constructor(
     private storage: AngularFireStorage,
     private firestore: AngularFirestore,
-    private authService: AuthService
+    private authService: AuthService,
+    private http: HttpClient
   ) {
     this.authService.getCurrentUser().subscribe((user) => {
       this.currentUser = user;
@@ -42,9 +44,7 @@ export class ProductService {
   }
 
   addProductToCart(product: Product) {
-    const userDoc = this.firestore.doc(
-      `users/${this.currentUser.id}`
-    );
+    const userDoc = this.firestore.doc(`users/${this.currentUser.id}`);
     return userDoc.get().pipe(
       map((doc) => {
         const cart = doc.data().cart;
@@ -71,14 +71,12 @@ export class ProductService {
     );
   }
 
-  removeProductFromCart(product: Product, whole = false) {
-    const userDoc = this.firestore.doc<User>(
-      `users/${this.currentUser.id}`
-    );
+  removeProductFromCart(productId: string, whole = false) {
+    const userDoc = this.firestore.doc<User>(`users/${this.currentUser.id}`);
     return userDoc.get().pipe(
-      switchMap(doc => {
+      switchMap((doc) => {
         const cart = doc.data().cart;
-        const index = cart.findIndex(prod => prod.ref.id === product.id);
+        const index = cart.findIndex((prod) => prod.ref.id === productId);
         cart[index].quantity -= 1;
         if (cart[index].quantity === 0 || whole) {
           cart.splice(index, 1);
@@ -204,5 +202,33 @@ export class ProductService {
       }),
       first()
     );
+  }
+
+  checkoutProducts(products: any[]): Observable<any> {
+    let toSend = {
+      user: {
+        email: this.currentUser.email,
+        name: this.currentUser.firstName + " " + this.currentUser.lastName,
+        phoneNumber: this.currentUser.username,
+      },
+      items: products,
+    };
+    const pdfPath = `bills/${this.currentUser.id}/${uuid()}.pdf`;
+    return this.http
+      .post("http://ig-web2-2.herokuapp.com/genPDF", toSend, {
+        responseType: "blob",
+      })
+      .pipe(
+        switchMap((blob: Blob) =>
+          this.storage
+            .ref(pdfPath)
+            .put(blob, {
+              contentType: 'application/pdf'
+            })
+        ),
+        first(),
+        switchMap(() => this.storage.ref(pdfPath).getDownloadURL()),
+        first()
+      );
   }
 }

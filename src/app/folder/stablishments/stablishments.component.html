@@ -41,7 +41,7 @@
               ></ion-input>
             </ion-item>
           </ion-col>
-          <ion-col size="12" >
+          <ion-col size="12">
             <ion-item>
               <ion-label position="floating">Descripcion</ion-label>
               <ion-textarea
@@ -52,7 +52,9 @@
             </ion-item>
           </ion-col>
           <ion-col size="12">
-            <app-location-picker (locationPick)="onLocationPicked($event)"></app-location-picker>
+            <app-location-picker
+              (locationPick)="onLocationPicked($event)"
+            ></app-location-picker>
           </ion-col>
           <ion-col size="12">
             <ion-item>
@@ -83,8 +85,11 @@
     </ion-grid>
   </div>
   <div id="container" *ngIf="!creating">
-    <ion-card *ngFor="let stab of stablishments" >
-      <img [src]="stab.image" [routerLink]="['/home/folder/products/' + stab.id + '/explore']"/>
+    <ion-card *ngFor="let stab of stablishments">
+      <img
+        [src]="stab.image"
+        [routerLink]="['/home/folder/products/' + stab.id + '/explore']"
+      />
       <ion-card-header>
         <ion-card-title>{{ stab.name }}</ion-card-title>
         <ion-card-subtitle>{{ stab.phoneNumber }}</ion-card-subtitle>
@@ -93,17 +98,22 @@
         {{ stab.description }}
       </ion-card-content>
       <ion-icon
-        *ngIf="!!currentUser && currentUser.email === stab.creatorEmail"
+        *ngIf="
+          !!currentUser && currentUser.email === stab.creatorEmail;
+          else viewProfile
+        "
         [routerLink]="['/home/folder/stablishments/' + stab.id]"
         name="pencil-outline"
         size="large"
       ></ion-icon>
-      <ion-icon
-        *ngIf="!!currentUser && currentUser.email === stab.creatorEmail"
-        [routerLink]="['/home/folder/stablishments/' + stab.id]"
-        name="eye-outline"
-        size="large"
-      ></ion-icon>
+      <ng-template #viewProfile>
+        <ion-icon
+          *ngIf="!!currentUser && currentUser.email === stab.creatorEmail"
+          [routerLink]="['/home/folder/stablishments/' + stab.id]"
+          name="eye-outline"
+          size="large"
+        ></ion-icon>
+      </ng-template>
     </ion-card>
   </div>
 </ion-content>

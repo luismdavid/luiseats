@@ -6,6 +6,8 @@ import { ImagePickerComponent } from "./image-picker/image-picker.component";
 import { ProductComponent } from "./product/product.component";
 import { MapModalComponent } from "./map-modal/map-modal.component";
 import { LocationPickerComponent } from "./location-picker/location-picker.component";
+import { ModalComponent } from "./modal/modal.component";
+import { SafePipe } from '../pipes/safe.pipe';
 
 @NgModule({
   declarations: [
@@ -14,6 +16,8 @@ import { LocationPickerComponent } from "./location-picker/location-picker.compo
     ProductComponent,
     MapModalComponent,
     LocationPickerComponent,
+    ModalComponent,
+    SafePipe
   ],
   imports: [CommonModule, IonicModule],
   providers: [],
@@ -23,6 +27,8 @@ import { LocationPickerComponent } from "./location-picker/location-picker.compo
     ProductComponent,
     MapModalComponent,
     LocationPickerComponent,
+    ModalComponent,
+    SafePipe
   ],
 })
 export class ComponentsModule {}

@@ -3,7 +3,7 @@ import {
   AngularFirestore,
   QueryDocumentSnapshot,
 } from "@angular/fire/firestore";
-import { map, first, switchMap } from "rxjs/operators";
+import { map, first, switchMap, tap } from "rxjs/operators";
 import { Observable, from } from "rxjs";
 import { AngularFireStorage } from "@angular/fire/storage";
 import uuid from "uuid/v4";
@@ -73,7 +73,7 @@ export class StablishmentService {
           image: stablishment.image,
           phoneNumber: stablishment.phoneNumber,
           creatorEmail: this.currentUser.email,
-          location: stablishment.location
+          location: stablishment.location,
         })
       );
     }
@@ -104,15 +104,13 @@ export class StablishmentService {
             image: imageUrl,
             phoneNumber: stablishment.phoneNumber,
             creatorEmail: this.currentUser.email,
-            location: stablishment.location
+            location: stablishment.location,
           })
         );
       }),
       first()
     );
   }
-
-  
 
   deleteStablishment(stablishment: Stablishment) {
     return from(
@@ -124,6 +122,22 @@ export class StablishmentService {
       first(),
       switchMap(() => {
         return this.storage.storage.refFromURL(stablishment.image).delete();
+      }),
+      switchMap(() => {
+        return from(
+          this.firestore
+            .collection<Product>("products", (ref) =>
+              ref.where("stablishmentId", "==", stablishment.id)
+            )
+            .get()
+            .pipe(
+              tap((querySnapshot) => {
+                querySnapshot.forEach((x) => {
+                  x.ref.delete();
+                });
+              })
+            )
+        );
       })
     );
   }

@@ -3,7 +3,13 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Modificar</ion-title>
+    <ion-title>{{
+      stablishment && currentUser.email === stablishment.creatorEmail
+        ? "Modificar"
+        : stablishment
+        ? stablishment.name
+        : ""
+    }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -40,7 +46,7 @@
             [selectedLocationImage]="form.value.location.staticMapImageUrl"
             [center]="form.value.location"
             [selectable]="
-              stablishment && currentUser.email !== stablishment.creatorEmail
+              stablishment && currentUser.email === stablishment.creatorEmail
             "
             (locationPick)="onLocationPicked($event)"
           ></app-location-picker>

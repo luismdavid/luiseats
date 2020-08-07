@@ -16,7 +16,7 @@ export class LocationPickerComponent implements OnInit {
   @Output() locationPick = new EventEmitter<PlaceLocation>();
   @Input() selectedLocationImage: string;
   isLoading = false;
-  @Input() selectable: boolean = false;
+  @Input() selectable: boolean = true;
   @Input() center: { lat: number, lng: number } = { lat: 10.649979, lng: -71.595405 };;
 
   constructor(private modalCtrl: ModalController, private http: HttpClient) {}
