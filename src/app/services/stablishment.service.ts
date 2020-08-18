@@ -6,11 +6,11 @@ import {
 import { map, first, switchMap, tap } from "rxjs/operators";
 import { Observable, from } from "rxjs";
 import { AngularFireStorage } from "@angular/fire/storage";
-import uuid from "uuid/v4";
 import { Stablishment } from "../models/stablishment.interface";
 import { Product } from "../models/product.interface";
 import { AuthService } from "./auth.service";
 import { User } from "../models/user.interface";
+import { v4 as uuid } from 'uuid';
 
 @Injectable({
   providedIn: "root",

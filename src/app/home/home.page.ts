@@ -20,6 +20,11 @@ export class HomePage implements OnInit {
       url: "/home/folder/stablishments",
       icon: "trash",
     },
+    {
+      title: "Chats",
+      url: "/home/folder/chats",
+      icon: "chatbubbles"
+    }
   ];
   public labels = ["Family", "Friends", "Notes", "Work", "Travel", "Reminders"];
   public currentUser: User;

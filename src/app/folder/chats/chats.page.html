@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>chats</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-chat-mini
+    *ngFor="let chat of chats"
+    [routerLink]="['./contact/'+chat.chat.id]"
+    [user]="chat.user"
+    [chat]="chat.chat"
+    [lastMessage]="'none'"
+  ></app-chat-mini>
+</ion-content>

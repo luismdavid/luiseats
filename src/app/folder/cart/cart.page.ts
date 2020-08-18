@@ -1,19 +1,28 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { User } from "src/app/models/user.interface";
-import { AuthService } from "src/app/services/auth.service";
-import { Product } from "src/app/models/product.interface";
-import { Subscription, from, empty } from "rxjs";
-import { AlertController, LoadingController, ModalController } from "@ionic/angular";
-import { ProductService } from "src/app/services/product.service";
-import { filter, switchMap, map, tap } from "rxjs/operators";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { User } from 'src/app/models/user.interface';
+import { AuthService } from 'src/app/services/auth.service';
+import { Product } from 'src/app/models/product.interface';
+import { Subscription, from, empty } from 'rxjs';
+import {
+  AlertController,
+  LoadingController,
+  ModalController,
+} from '@ionic/angular';
+import { ProductService } from 'src/app/services/product.service';
+import { filter, switchMap, map, tap, first } from 'rxjs/operators';
 import { Toast } from '@capacitor/core';
 import { ToastService } from 'src/app/services/toast.service';
 import { ModalComponent } from 'src/app/components/modal/modal.component';
+import { ChatService } from 'src/app/services/chat.service';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { v4 as uuid } from 'uuid';
+import { Message } from 'src/app/models/message.interface';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
-  selector: "app-cart",
-  templateUrl: "./cart.page.html",
-  styleUrls: ["./cart.page.scss"],
+  selector: 'app-cart',
+  templateUrl: './cart.page.html',
+  styleUrls: ['./cart.page.scss'],
 })
 export class CartPage implements OnInit, OnDestroy {
   user: User;
@@ -26,7 +35,11 @@ export class CartPage implements OnInit, OnDestroy {
     private productsService: ProductService,
     private loadingCtrl: LoadingController,
     private toast: ToastService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private alertCtrl: AlertController,
+    private chatService: ChatService,
+    private firestore: AngularFirestore,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -72,39 +85,55 @@ export class CartPage implements OnInit, OnDestroy {
   checkout() {
     this.loadingCtrl
       .create({
-        message: "Generando factura",
+        message: 'Generando factura',
       })
       .then((load) => {
         load.present();
-        this.productsService
-          .checkoutProducts(
-            this.cartProducts.map((x) => ({
-              name: x.name,
-              quantity: this.user.cart[
-                this.user.cart.findIndex((prod) => prod.ref.id === x.id)
-              ].quantity,
-              total:
-                this.user.cart[
-                  this.user.cart.findIndex((prod) => prod.ref.id === x.id)
-                ].quantity * x.price,
-            }))
+        this.initializeChat({
+          message:
+            'Su orden ha sida procesada y se le ha asignado un conductor para llevarla.',
+          files: [],
+        })
+          .pipe(
+            switchMap(() =>
+              this.productsService.checkoutProducts(
+                this.cartProducts.map((x) => ({
+                  name: x.name,
+                  quantity: this.user.cart[
+                    this.user.cart.findIndex((prod) => prod.ref.id === x.id)
+                  ].quantity,
+                  total:
+                    this.user.cart[
+                      this.user.cart.findIndex((prod) => prod.ref.id === x.id)
+                    ].quantity * x.price,
+                }))
+              )
+            )
           )
           .subscribe(
             (res) => {
               console.log(res);
-              this.modalCtrl.create({
-                component: ModalComponent,
-                componentProps: {
-                  pdf: res
-                }
-              }).then(modal => {
-                modal.present();
-              })
+              this.modalCtrl
+                .create({
+                  component: ModalComponent,
+                  componentProps: {
+                    pdf: res,
+                  },
+                })
+                .then((modal) => {
+                  modal.present();
+                });
               load.dismiss();
             },
             (err) => {
               console.log(err);
-              this.toast.show("Ha ocurrido un error.");
+              this.alertCtrl
+                .create({
+                  message: JSON.stringify(err),
+                })
+                .then((alert) => alert.present());
+              this.toast.show('Ha ocurrido un error.');
+              load.dismiss();
             }
           );
       });
@@ -147,6 +176,29 @@ export class CartPage implements OnInit, OnDestroy {
     this.productsService
       .removeProductFromCart(product.id, true)
       .subscribe((res) => this.calculateTotal());
+  }
+
+  initializeChat(contents: {
+    files: { url: string; icon: string }[];
+    message: string;
+  }) {
+    const chatId = uuid();
+    const message: Message = {
+      id: uuid(),
+      chat: this.firestore.doc(`chats/` + chatId).ref,
+      date: new Date(),
+      sender: this.user.username,
+      text: contents.message,
+      type: contents.files.length > 0 ? 'file' : 'text',
+      user: this.user.id,
+    };
+    return this.authService.getRandomDriver().pipe(
+      switchMap((driver) => {
+        console.log(driver);
+        return this.chatService.createChat(driver, chatId);
+      }),
+      switchMap(() => this.messageService.createMessage(message))
+    );
   }
 
   helperCheck(product) {

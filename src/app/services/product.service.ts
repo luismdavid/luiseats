@@ -6,7 +6,7 @@ import { AngularFireStorage } from "@angular/fire/storage";
 import { AngularFirestore } from "@angular/fire/firestore";
 import { AuthService } from "./auth.service";
 import { User } from "../models/user.interface";
-import uuid from "uuid/v4";
+import { v4 as uuid } from 'uuid';
 import { HttpClient } from "@angular/common/http";
 
 @Injectable({
@@ -215,8 +215,8 @@ export class ProductService {
     };
     const pdfPath = `bills/${this.currentUser.id}/${uuid()}.pdf`;
     return this.http
-      .post("http://ig-web2-2.herokuapp.com/genPDF", toSend, {
-        responseType: "blob",
+      .get("http://ig-web2-2.herokuapp.com/genPDF?body="+JSON.stringify(toSend), {
+        responseType: "blob"
       })
       .pipe(
         switchMap((blob: Blob) =>

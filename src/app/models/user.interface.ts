@@ -8,4 +8,10 @@ export interface User {
     username: string;
     cart: { quantity: number; ref: DocumentReference }[];
     isAdmin: boolean;
+    chats: { ref: DocumentReference; user: DocumentReference }[];
+    isDriver: boolean;
+    idPicture?: string;
+    platePicture?: string;
+    vehicleColor?: string;
+    isVerified?: boolean;
 }

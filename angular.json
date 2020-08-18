@@ -32,6 +32,7 @@
               }
             ],
             "styles": [
+              "./node_modules/@nebular/theme/styles/prebuilt/default.css",
               {
                 "input": "src/theme/variables.scss"
               },
@@ -128,7 +129,9 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": ["**/node_modules/**"]
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         },
         "e2e": {

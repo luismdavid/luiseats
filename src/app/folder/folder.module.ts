@@ -11,6 +11,9 @@ import { StablishmentsComponent } from './stablishments/stablishments.component'
 import { ComponentsModule } from '../components/components.module';
 import { EditStablishmentComponent } from './stablishments/edit-stablishment/edit-stablishment.component';
 import { CartPageModule } from './cart/cart.module';
+import { ChatsPage } from './chats/chats.page';
+import { NbChatModule, NbSpinnerModule, NbUserModule, NbCardModule } from '@nebular/theme';
+import { ChatMiniComponent } from './chats/chat-mini/chat-mini.component';
 
 @NgModule({
   imports: [
@@ -20,7 +23,9 @@ import { CartPageModule } from './cart/cart.module';
     ReactiveFormsModule,
     FolderPageRoutingModule,
     ComponentsModule,
+    NbUserModule,
+    NbCardModule
   ],
-  declarations: [FolderPage, StablishmentsComponent, EditStablishmentComponent]
+  declarations: [FolderPage, StablishmentsComponent, EditStablishmentComponent, ChatsPage, ChatMiniComponent]
 })
 export class FolderPageModule {}

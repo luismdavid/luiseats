@@ -1,5 +1,5 @@
 <div class="container">
-  <ion-grid>
+  <ion-grid style="max-width: 100vw;" [ngClass]="{'idk': form.value.isDriver}" >
     <form (ngSubmit)="createUser()" [formGroup]="form">
       <ion-row>
         <ion-col size="12">
@@ -49,6 +49,36 @@
               placeholder="Apellido"
               type="text"
               formControlName="lastName"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label>Conductor ?</ion-label>
+            <ion-checkbox slot="start" formControlName="isDriver"></ion-checkbox>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" *ngIf="form.value.isDriver">
+          <ion-label color="light">Cedula de identidad</ion-label>
+          <app-image-picker
+            [showPreview]="form.get('idPicture').value"
+            (imagePicked)="onImagePicked('idPicture', $event)"
+          ></app-image-picker>
+        </ion-col>
+        <ion-col size="12" *ngIf="form.value.isDriver">
+          <ion-label color="light">Placa de vehiculo</ion-label>
+          <app-image-picker
+            [showPreview]="form.get('platePicture').value"
+            (imagePicked)="onImagePicked('platePicture', $event)"
+          ></app-image-picker>
+        </ion-col>
+        <ion-col size="12" *ngIf="form.value.isDriver">
+          <ion-item>
+            <ion-label position="floating">Color del vehiculo</ion-label>
+            <ion-input
+              placeholder="Apellido"
+              type="text"
+              formControlName="vehicleColor"
             ></ion-input>
           </ion-item>
         </ion-col>

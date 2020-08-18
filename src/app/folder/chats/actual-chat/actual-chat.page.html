@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>actual-chat</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<nb-chat
+    [scrollBottom]="true"
+    [nbSpinner]="loading"
+    [title]="chat?.name"
+    size="medium"
+    status="success"
+  >
+    <nb-chat-message
+      *ngFor="let message of messages"
+      [type]="message.type"
+      [message]="message.text"
+      [reply]="message.sender === currentUser.username"
+      [sender]="message.sender"
+      [date]="message.date"
+      [files]="message.files"
+    ></nb-chat-message>
+    <nb-chat-form
+      (send)="sendMessageAction($event)"
+      [showButton]="true"
+      [dropFiles]="true"
+    >
+    </nb-chat-form>
+  </nb-chat>
+</ion-content>
